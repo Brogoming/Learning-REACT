@@ -1,23 +1,23 @@
 
 import './App.css';
+import Employee from './components/Employee';
 
 function App() {
+  console.log("We are about to list the employees");
+  const showEmployees = true;
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>Hello World!</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {showEmployees ?( //we can do JavaScript logic in HTML if there is { } surrounding the code
+        <div>
+          <Employee></Employee> 
+          <Employee></Employee> 
+          <Employee></Employee> 
+          <Employee></Employee> 
+          <Employee></Employee> 
+        </div>
+      ) : (
+        <p>You cannot see the employees.</p>
+      )}
     </div>
   );
 }
