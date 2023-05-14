@@ -18,14 +18,14 @@ function App() {
   )
   const showEmployees = true;
   return (
-    <div class='App'>
+    <div className='App'>
       {showEmployees ?( //we can do JavaScript logic in HTML if there is { } surrounding the code
         <>
           <input type='text' onChange={(e) => {
             console.log(e.target.value) //to get what we actually typed in into the input
             setRole(e.target.value)
           }}/>
-          <div class="flex flex-wrap justify-center">
+          <div className="flex flex-wrap justify-center">
             {employees.map((employee) => {
               return(
                 <Employee 
