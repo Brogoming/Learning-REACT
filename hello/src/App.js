@@ -1,8 +1,10 @@
 import './App.css';
 import AddEmployee from './components/AddEmployee';
+import EditEmployee from './components/EditEmployee';
 import Employee from './components/Employee';
 import {useState} from 'react'
 import {v4 as uuidv4} from 'uuid'
+import Header from './components/Header'
 
 function App() {
   const [role, setRole] = useState('dev') //const [variableName, setVariableName] = useState(default value)
@@ -40,15 +42,20 @@ function App() {
 
   const showEmployees = true;
   return (
-    <div className='App'>
+    <div className='App bg-gray-300 min-h-screen'>
+      <Header />
       {showEmployees ?( //we can do JavaScript logic in HTML if there is { } surrounding the code
         <>
-          <input type='text' onChange={(e) => {
-            console.log(e.target.value) //to get what we actually typed in into the input
-            setRole(e.target.value)
-          }}/>
-          <div className="flex flex-wrap justify-center">
+          <div className="flex flex-wrap justify-center my-2">
             {employees.map((employee) => {
+              const editEmployee = (
+                <EditEmployee 
+                  id={employee.id} 
+                  name={employee.name} 
+                  role={employee.role} 
+                  updateEmployee={updateEmployee}
+                />
+              );
               return(
                 <Employee 
                   key={employee.id}
@@ -56,7 +63,7 @@ function App() {
                   name={employee.name} 
                   role={employee.role} 
                   img={employee.img}
-                  updateEmployee={updateEmployee}
+                  editEmployee={editEmployee}
                 />
               );
             }) /*this is a function on the array that allows us to go through th elements*/}
