@@ -42,10 +42,10 @@ function Employees() {
 
   const showEmployees = true;
   return (
-    <div className='App bg-gray-300 min-h-screen'>
+    <div>
       {showEmployees ?( //we can do JavaScript logic in HTML if there is { } surrounding the code
         <>
-          <div className="flex flex-wrap justify-center my-2">
+          <div className="flex flex-wrap justify-center">
             {employees.map((employee) => {
               const editEmployee = (
                 <EditEmployee 
