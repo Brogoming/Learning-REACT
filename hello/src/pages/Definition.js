@@ -1,11 +1,13 @@
 import {useState, useEffect} from 'react'
+import {useParams} from 'react-router-dom'
 import {v4 as uuidv4} from 'uuid'
 
 export default function Definition(){
     const [word, setWord] = useState('')
+    let {search} = useParams()
 
     useEffect(() => {
-        fetch('https://api.dictionaryapi.dev/api/v2/entries/en/Zebra')
+        fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + search) //fetches a api
             .then((response) => response.json())
             .then((data) => {
                 setWord(data[0].meanings)
@@ -22,6 +24,12 @@ export default function Definition(){
                         {meaning.definitions[0].definition}
                     </p>
                 )
+                // return (
+                //     <p key={uuidv4()}>
+                //         {'Synonyms: '}
+                //         {meaning.synonyms[0]}
+                //     </p>
+                // )
             }) : null}
         </>
     )
