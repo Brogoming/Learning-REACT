@@ -8,14 +8,26 @@ export default function Definition(){
     let {search} = useParams()
     const navigate = useNavigate()
     const [notFound, setNotFound] = useState(false)
+    const [error, setError] = useState(false)
 
     useEffect(() => {
-        fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + search) //fetches a api
+        const errorUrl = 'https://httpstat.us/500'
+        const dictionaryUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + search
+        fetch(dictionaryUrl) //fetches a api
             .then((response) => {
+                console.log(response.status) //tells us the status of the page
                 if(response.status === 404){
-                    console.log(response.status) //tells us the status of the page
                     // navigate('/404')
                     setNotFound(true)
+                } else if(response.status === 401){
+                    navigate('/401')
+                } else if(response.status === 500){
+                    setError(true)
+                }
+
+                if(!response.ok){
+                    setError(true)
+                    throw new Error('Something went wrong')
                 }
                 return response.json()
             })
@@ -23,12 +35,26 @@ export default function Definition(){
                 setAWord(data[0])
                 console.log(data[0])
             })
+            .catch((e) => {
+                console.log(e.message)
+            })
     }, [])
 
     if(notFound === true){
         return (
             <>
                 <NotFound />
+                {/* <Link to='/dictionary'>Search Another</Link> // I linke the button better*/ }
+                <button onClick={() => {
+                    navigate('/dictionary') //making replace true replaces the current spot in the history
+                }}>Dictionary</button>
+            </>
+        )
+    }
+    if(error === true){
+        return (
+            <>
+                <p>Something went wrong!</p>
                 {/* <Link to='/dictionary'>Search Another</Link> // I linke the button better*/ }
                 <button onClick={() => {
                     navigate('/dictionary') //making replace true replaces the current spot in the history
