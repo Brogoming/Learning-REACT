@@ -11,12 +11,12 @@ export default function Definition(){
             .then((response) => response.json())
             .then((data) => {
                 setWord(data[0].meanings)
-                console.log(data[0].meanings)
+                // console.log(data[0].meanings)
             })
     }, [])
     return (
         <>
-            <h1>Here is a definition:</h1>
+            <h1>Here is a definition: </h1>
             {word? word.map((meaning) => {
                 return (
                     <p key={uuidv4()}>
