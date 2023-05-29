@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react'
 import {useParams, useNavigate, Link} from 'react-router-dom'
 import {v4 as uuidv4} from 'uuid'
 import NotFound from '../components/NotFound'
+import DefSearch from '../components/DefSearch'
 
 export default function Definition(){
     const [aWord, setAWord] = useState('')
@@ -67,15 +68,18 @@ export default function Definition(){
 
             {aWord? 
                 <>
-                <h1>Here is the definition for {aWord.word}</h1>
-                {aWord.meanings.map((meaning) => {
-                    return (
-                        <p key={uuidv4()}>
-                            {meaning.partOfSpeech + ': '}
-                            {meaning.definitions[0].definition}
-                        </p>
-                    )
-                })}</>
+                    <h1>Here is the definition for {aWord.word}</h1>
+                    {aWord.meanings.map((meaning) => {
+                        return (
+                            <p key={uuidv4()}>
+                                {meaning.partOfSpeech + ': '}
+                                {meaning.definitions[0].definition}
+                            </p>
+                        )
+                    })}
+                    <p>Search Again:</p>
+                    <DefSearch />
+                </>
                 : null}
         </>
     )
