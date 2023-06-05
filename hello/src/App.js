@@ -13,7 +13,7 @@ function App() {
       <Header>
         <Routes>
           <Route path='/employees' element={<Employees />} />
-          <Route path='/test' element={<Customers />} />
+          <Route path='/customers' element={<Customers />} />
           <Route path='/dictionary' element={<Dictionary />} />
           <Route path='/dictionary/:search' element={<Definition />} />
           <Route path='/404' element={<NotFound />} />
