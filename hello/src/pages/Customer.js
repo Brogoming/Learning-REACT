@@ -8,6 +8,17 @@ export default function Customer(){
     const navigate = useNavigate()
     const [customer, setCustomer] = useState()
     const [notFound, setnotFound] = useState()
+    const [tempCustomer, setTempCustomer] = useState()
+    const [changed, setChanged] = useState(false)
+
+    useEffect(() => {
+        if(!customer) return
+        if(!customer) return
+        let equal = true
+        if(customer.name !== tempCustomer.name) equal = false
+        if(customer.industry !== tempCustomer.industry) equal = false
+        if(equal) setChanged(false)
+    })
 
     useEffect(() => {
         console.log('useEffect')
@@ -25,20 +36,54 @@ export default function Customer(){
         })
         .then((data) => {
             setCustomer(data.customer)
+            setTempCustomer(data.customer)
         })
     }, [])
+
+    function updateCustomer(){
+        const url = baseUrl + 'api/customers/' + id
+        fetch(url, {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tempCustomer)
+        })
+        .then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            setCustomer(data.customer)
+            setChanged(false)
+            // console.log(data)
+        })
+        .catch()
+    }
 
     return (
         <>
             {notFound ? <p>The customer with the id {id} was not found.</p>: null}
             {customer ? 
                 <div>
-                    <p>{customer.id}</p>
-                    <p>{customer.name}</p>
-                    <p>{customer.industry}</p>
+                    {/* <p className='my-2 block px-2' type="text">ID: {tempCustomer.id} </p> */}
+                    <input className='m-2 block px-2' type="text" value={tempCustomer.name} onChange={(e) => {
+                        setChanged(true)
+                        setTempCustomer({...tempCustomer, name: e.target.value}) //the change is delayed
+                    }}/>
+                    <input className='m-2 block px-2' type="text" value={tempCustomer.industry} onChange={(e) => {
+                        setChanged(true)
+                        setTempCustomer({...tempCustomer, industry: e.target.value})
+                    }}/>
+                    {changed ? <>
+                        <button className='mx-2' onClick={(e) => {
+                            setTempCustomer({...customer})
+                            setChanged(false)
+                        }}>Cancel</button> 
+                        <button className='mx-2' onClick={updateCustomer}>Save</button>
+                    </> : null}
                 </div>
             : null}
-            <button onClick={() => {
+            <button className='mx-2 block' onClick={() => {
                 const url = baseUrl + 'api/customers/' + id
                 fetch(url, {method: 'DELETE', headers: {
                     'Content-Type': 'application/json'
@@ -53,8 +98,7 @@ export default function Customer(){
                     console.log(e)
                 })
             }}>Delete</button>
-            <br/>
-            <Link to='/customers'>Go Back</Link>
+            <Link className='mx-2' to='/customers'>Go Back</Link>
         </>
     )
 }
