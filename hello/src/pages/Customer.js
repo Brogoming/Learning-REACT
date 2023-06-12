@@ -49,7 +49,8 @@ export default function Customer() {
       });
   }, []);
 
-  function updateCustomer() {
+  function updateCustomer(e) {
+    e.preventDefault();
     const url = baseUrl + "api/customers/" + id;
     fetch(url, {
       method: "POST",
@@ -73,33 +74,58 @@ export default function Customer() {
   }
 
   return (
-    <>
+    <div className="p-3">
       {notFound ? <p>The customer with the id {id} was not found.</p> : null}
       {customer ? (
         <div>
           {/* <p className='my-2 block px-2' type="text">ID: {tempCustomer.id} </p> */}
-          <input
-            className="m-2 block px-2"
-            type="text"
-            value={tempCustomer.name}
-            onChange={(e) => {
-              setChanged(true);
-              setTempCustomer({ ...tempCustomer, name: e.target.value }); //the change is delayed
-            }}
-          />
-          <input
-            className="m-2 block px-2"
-            type="text"
-            value={tempCustomer.industry}
-            onChange={(e) => {
-              setChanged(true);
-              setTempCustomer({ ...tempCustomer, industry: e.target.value });
-            }}
-          />
+          <form
+            id="customer"
+            onSubmit={updateCustomer}
+            className="w-full max-w-sm"
+          >
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/4">
+                <label for="name">Name</label>
+              </div>
+              <div className="md:w-3/4">
+                <input
+                  id="name"
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-red-500"
+                  type="text"
+                  value={tempCustomer.name}
+                  onChange={(e) => {
+                    setChanged(true);
+                    setTempCustomer({ ...tempCustomer, name: e.target.value }); //the change is delayed
+                  }}
+                />
+              </div>
+            </div>
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/4">
+                <label id="industry">Industry</label>
+              </div>
+              <div className="md:w-3/4">
+                <input
+                  id="industry"
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-red-500"
+                  type="text"
+                  value={tempCustomer.industry}
+                  onChange={(e) => {
+                    setChanged(true);
+                    setTempCustomer({
+                      ...tempCustomer,
+                      industry: e.target.value,
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          </form>
           {changed ? (
-            <>
+            <div className="mb-2">
               <button
-                className="mx-2"
+                className="mr-2 bg-slate-400 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded"
                 onClick={(e) => {
                   setTempCustomer({ ...customer });
                   setChanged(false);
@@ -107,42 +133,49 @@ export default function Customer() {
               >
                 Cancel
               </button>
-              <button className="mx-2" onClick={updateCustomer}>
+              <button
+                form="customer"
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              >
                 Save
               </button>
-            </>
+            </div>
           ) : null}
 
-          <button
-            className="mx-2 block"
-            onClick={() => {
-              const url = baseUrl + "api/customers/" + id;
-              fetch(url, {
-                method: "DELETE",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              })
-                .then((response) => {
-                  if (!response.ok) {
-                    throw new Error("Something went wrong");
-                  }
-                  navigate("/customers");
-                  //assume things went well
+          <div>
+            <button
+              className="mb-2 bg-slate-800 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded"
+              onClick={() => {
+                const url = baseUrl + "api/customers/" + id;
+                fetch(url, {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
                 })
-                .catch((e) => {
-                  console.log(e);
-                });
-            }}
-          >
-            Delete
-          </button>
+                  .then((response) => {
+                    if (!response.ok) {
+                      throw new Error("Something went wrong");
+                    }
+                    navigate("/customers");
+                    //assume things went well
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              }}
+            >
+              Delete
+            </button>
+          </div>
         </div>
       ) : null}
-      {error ? <p className="mx-2">{error}</p> : null}
-      <Link className="mx-2" to="/customers">
-        Go Back
+      {error ? <p>{error}</p> : null}
+      <Link to="/customers">
+        <button className="no-underline bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          ← Go Back
+        </button>
       </Link>
-    </>
+    </div>
   );
 }
