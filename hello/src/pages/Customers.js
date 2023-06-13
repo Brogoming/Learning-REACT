@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { baseUrl } from "../shared";
 import AddCustomer from "../components/AddCustomer";
 
 export default function Customers() {
   const [customers, setCustomers] = useState();
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   function toggleShow() {
     setShow(!show);
@@ -14,7 +15,12 @@ export default function Customers() {
   useEffect(() => {
     // console.log('Fetching...')
     fetch(baseUrl + "api/customers/")
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 401) {
+          navigate("/login");
+        }
+        return response.json();
+      })
       .then((data) => {
         // console.log(data)
         setCustomers(data.customers);
@@ -54,7 +60,7 @@ export default function Customers() {
       {customers
         ? customers.map((customer) => {
             return (
-              <div className='m-2F' key={customer.id}>
+              <div className="m-2" key={customer.id}>
                 <Link to={"/customers/" + customer.id}>
                   <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                     {customer.name}

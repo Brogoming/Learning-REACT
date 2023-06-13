@@ -32,6 +32,8 @@ export default function Customer() {
 
           //render a 404 component in this page
           setnotFound(true);
+        } else if (response.status === 401) {
+          navigate("/login");
         }
 
         if (!response.ok)
