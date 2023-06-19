@@ -21,8 +21,6 @@ export default function Definition() {
         if (response.status === 404) {
           // navigate('/404')
           setNotFound(true);
-        } else if (response.status === 401) {
-          navigate("/401");
         } else if (response.status === 500) {
           setError(true);
         }

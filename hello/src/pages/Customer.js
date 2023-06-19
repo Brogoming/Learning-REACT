@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 // import NotFound from '../components/NotFound';
 import { baseUrl } from "../shared";
@@ -6,6 +6,7 @@ import { baseUrl } from "../shared";
 export default function Customer() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [customer, setCustomer] = useState();
   const [notFound, setnotFound] = useState();
   const [tempCustomer, setTempCustomer] = useState();
@@ -38,7 +39,11 @@ export default function Customer() {
           //render a 404 component in this page
           setnotFound(true);
         } else if (response.status === 401) {
-          navigate("/login");
+          navigate("/login", {
+            state: {
+              previousUrl: location.pathname,
+            },
+          });
         }
 
         if (!response.ok)
@@ -69,7 +74,11 @@ export default function Customer() {
     })
       .then((response) => {
         if (response.status === 401) {
-          navigate("/login");
+          navigate("/login", {
+            state: {
+              previousUrl: location.pathname,
+            },
+          });
         }
         if (!response.ok) throw new Error("Something went wrong");
         return response.json();
@@ -167,7 +176,11 @@ export default function Customer() {
                 })
                   .then((response) => {
                     if (response.status === 401) {
-                      navigate("/login");
+                      navigate("/login", {
+                        state: {
+                          previousUrl: location.pathname,
+                        },
+                      });
                     }
                     if (!response.ok) {
                       throw new Error("Something went wrong");
