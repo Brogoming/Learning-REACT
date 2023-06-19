@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { baseUrl } from "../shared";
+import { useLocation } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
+  const location = useLocation();
 
   function login(e) {
     e.preventDefault(); //doesn't reload the page when we submit
@@ -22,7 +24,8 @@ export default function Login() {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        localStorage.setItem("access", data.access);
+        localStorage.setItem("refresh", data.refresh);
       });
   }
 
