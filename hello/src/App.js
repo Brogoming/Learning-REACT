@@ -33,7 +33,7 @@ function App() {
             return response.json();
           })
           .then((data) => {
-            console.log(data);
+            // console.log(data);
             localStorage.access = data.access;
             localStorage.refresh = data.refresh;
             setLoggedIn(true);
