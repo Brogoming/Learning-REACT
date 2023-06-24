@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function useFetch(url, {method, headers, body}) {
+export default function useFetch(url, { method, headers, body } = {}) {
   const [data, setData] = useState();
   const [errorStatus, setErrorStatus] = useState();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   useEffect(() => {
     fetch(url, {
       method: method,
@@ -34,5 +34,5 @@ export default function useFetch(url, {method, headers, body}) {
       });
   }, []);
 
-  return {data, errorStatus};
+  return { data, setData, errorStatus };
 }

@@ -8,10 +8,11 @@ import useFetch from "../hooks/UseFetch";
 export default function Definition() {
   let { search } = useParams();
   const navigate = useNavigate();
-  // const location = useLocation();
+  const location = useLocation();
 
-  const [word, errorStatus] = useFetch(
-    "https://api.dictionaryapi.dev/api/v2/entries/en/" + search
+  const { data: [{ meanings: word }] = [{}], errorStatus } = useFetch(
+    "https://api.dictionaryapi.dev/api/v2/entries/en/" + search,
+    {}
   );
 
   if (errorStatus === 404) {
@@ -47,10 +48,10 @@ export default function Definition() {
 
   return (
     <>
-      {word?.[0]?.meanings ? (
+      {word ? (
         <>
           <h1>Here is the definition:</h1>
-          {word[0].meanings.map((meaning) => {
+          {word.map((meaning) => {
             return (
               <p key={uuidv4()}>
                 {meaning.partOfSpeech + ": "}
