@@ -5,7 +5,8 @@ import CryptoSummary from "./components/CryptoSummary";
 import { Crypto } from "./Types";
 
 function App() {
-  const [cryptos, setCryptos] = useState<Crypto[] | null>();
+  const [cryptos, setCryptos] = useState<Crypto[] | null>(null);
+  const [selected, setSelect] = useState<Crypto | null>();
   //useState is what we use to set up a value
   //for a specific value type for use state we will put <typename> after useState and before ()
   //<typename[] > makes it an array
@@ -22,14 +23,36 @@ function App() {
       });
   }, []);
   return (
-    <div className="App">
-      {cryptos //turnary opperation that says is cryptos has a value run whatever is after ? otherwise run whatever is after :
-        ? cryptos.map((crypto) => {
-            //this will go through all of the objects in cryptos
-            return <CryptoSummary crypto={crypto} />; //returns the componet that would print out data
-          })
-        : null}
-    </div>
+    <>
+      <div className="App">
+        <select
+          onChange={(e) => {
+            //once a option is selected
+            const c = cryptos?.find((x) => x.id === e.target.value); //find where x.id === the option selected
+            setSelect(c);
+          }}
+          defaultValue="default"
+        >
+          {/*this will give us all the different options*/}
+          {cryptos //turnary opperation that says is cryptos has a value run whatever is after ? otherwise run whatever is after :
+            ? cryptos.map((crypto) => {
+                //.map() this will go through all of the objects in cryptos
+
+                // return <CryptoSummary crypto={crypto} />; //returns the componet that would print out data
+
+                return (
+                  <option key={crypto.id} value={crypto.id}>
+                    {crypto.name}
+                  </option>
+                );
+              })
+            : null}
+          <option value="default">Choose an option</option>
+        </select>
+      </div>
+      {selected ? <CryptoSummary crypto={selected} /> : null}{" "}
+      {/* //if there is a selected element run the Crypto summary function */}
+    </>
   );
 }
 
