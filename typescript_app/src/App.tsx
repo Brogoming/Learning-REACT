@@ -1,20 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
-
-export type Crypto = {
-  //this is a structure we will use when mapping through all of the objects in crypto
-  //we need to replace the values with the type they are
-  ath: number;
-  atl: number;
-  current_price: number;
-  id: string;
-  image: string;
-  name: string;
-  symbol: string;
-  high_24h: number;
-  low_24h: number;
-};
+import CryptoSummary from "./components/CryptoSummary";
+import { Crypto } from "./Types";
 
 function App() {
   const [cryptos, setCryptos] = useState<Crypto[] | null>();
@@ -38,7 +26,7 @@ function App() {
       {cryptos //turnary opperation that says is cryptos has a value run whatever is after ? otherwise run whatever is after :
         ? cryptos.map((crypto) => {
             //this will go through all of the objects in cryptos
-            return <p>{crypto.name + " $" + crypto.current_price}</p>;
+            return <CryptoSummary crypto={crypto} />; //returns the componet that would print out data
           })
         : null}
     </div>
