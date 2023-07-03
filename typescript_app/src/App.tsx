@@ -13,9 +13,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
-import type { ChartData, ChartOptions } from "chart.js";
-import moment from "moment";
+// import { Line } from "react-chartjs-2";
+// import type { ChartData, ChartOptions } from "chart.js";
+// import moment from "moment";
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +30,7 @@ ChartJS.register(
 function App() {
   const [cryptos, setCryptos] = useState<Crypto[] | null>(null);
   const [selected, setSelect] = useState<Crypto[]>([]);
-  const [range, setRange] = useState<number>(30);
+  // const [range, setRange] = useState<number>(30);
 
   /*
   const [data, setData] = useState<ChartData<"line">>();
@@ -54,7 +54,7 @@ function App() {
   useEffect(() => {
     //useEffect will auto matically load when a function on the page is used
     const url =
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false";
     axios
       .get(url) //get the source of data which is the url
       .then((response) => {
@@ -111,6 +111,21 @@ function App() {
   }, [selected, range]);
   */
 
+  useEffect(() => {
+    console.log("Selected:", selected);
+  }, [selected]);
+
+  function updateOwned(crypto: Crypto, amount: number): void {
+    // console.log(selected);
+    console.log("updateOwned", crypto, amount);
+    let temp = [...selected];
+    let tempObject = temp.find((c) => c.id === crypto.id);
+    if (tempObject) {
+      tempObject.owned = amount;
+      setSelect(temp);
+    }
+  }
+
   return (
     <>
       <div className="App">
@@ -142,7 +157,7 @@ function App() {
         </select>
       </div>
       {selected.map((s) => {
-        return <CryptoSummary crypto={s} />;
+        return <CryptoSummary crypto={s} updateOwned={updateOwned} />;
       })}
       {/*selected ? <CryptoSummary crypto={selected} /> : null*/}
       {/* //if there is a selected element run the Crypto summary function */}
@@ -151,6 +166,23 @@ function App() {
           <Line options={options} data={data} />
         </div>
       ) : null*/}
+      {selected
+        ? "Your portfolio is worth: $" +
+          selected
+            .map((s) => {
+              if (isNaN(s.owned)) {
+                return 0;
+              }
+              return s.current_price * s.owned;
+            })
+            .reduce((prev, current) => {
+              return prev + current;
+            }, 0)
+            .toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+        : null}
     </>
   );
 }
