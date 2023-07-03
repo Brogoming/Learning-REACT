@@ -29,13 +29,16 @@ ChartJS.register(
 
 function App() {
   const [cryptos, setCryptos] = useState<Crypto[] | null>(null);
-  const [selected, setSelect] = useState<Crypto | null>();
+  const [selected, setSelect] = useState<Crypto[]>([]);
+  const [range, setRange] = useState<number>(30);
+
+  /*
   const [data, setData] = useState<ChartData<"line">>();
   const [options, setOptions] = useState<ChartOptions<"line">>({
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
+        display: false,
       },
       title: {
         display: true,
@@ -46,11 +49,12 @@ function App() {
   //useState is what we use to set up a value
   //for a specific value type for use state we will put <typename> after useState and before ()
   //<typename[] > makes it an array
+  */
 
   useEffect(() => {
     //useEffect will auto matically load when a function on the page is used
     const url =
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en";
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
     axios
       .get(url) //get the source of data which is the url
       .then((response) => {
@@ -58,38 +62,65 @@ function App() {
         setCryptos(response.data); //we will set the crypto variable to the data from the source
       });
   }, []);
+  /*
+  useEffect(() => {
+    if (!selected) return;
+    axios
+      .get(
+        `https://api.coingecko.com/api/v3/coins/${
+          selected?.id
+        }/market_chart?vs_currency=usd&days=${range}&${
+          range === 1 ? `interval=hourly` : `interval=daily`
+        }`
+      )
+      .then((response) => {
+        console.log(response.data);
+        setData({
+          labels: response.data.prices.map((price: number[]) => {
+            return moment
+              .unix(price[0] / 1000)
+              .format(range === 1 ? "HH:MM" : "MM-DD");
+          }),
+          datasets: [
+            {
+              label: "Price",
+              data: response.data.prices.map((price: number[]) => {
+                return price[1];
+              }),
+              borderColor: "rgb(255, 99, 132)",
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+          ],
+        });
+        setOptions({
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false,
+            },
+            title: {
+              display: true,
+              text:
+                `${selected?.name} Price over last ` +
+                range +
+                (range === 1 ? " Day." : " Days."),
+            },
+          },
+        });
+      });
+  }, [selected, range]);
+  */
+
   return (
     <>
       <div className="App">
         <select
           onChange={(e) => {
             //once a option is selected
-            const c = cryptos?.find((x) => x.id === e.target.value); //find where x.id === the option selected
-            setSelect(c);
+            const c = cryptos?.find((x) => x.id === e.target.value) as Crypto; //find where x.id === the option selected
+            setSelect([...selected, c]);
             //request
             //update data change
-            axios
-              .get(
-                `https://api.coingecko.com/api/v3/coins/${c?.id}/market_chart?vs_currency=usd&days=30&interval=daily`
-              )
-              .then((response) => {
-                console.log(response.data);
-                setData({
-                  labels: response.data.prices.map((price: number[]) => {
-                    return moment.unix(price[0] / 1000).format('MM-DD-YYYY');
-                  }),
-                  datasets: [
-                    {
-                      label: "Price",
-                      data: response.data.prices.map((price: number[]) => {
-                        return price[1];
-                      }),
-                      borderColor: "rgb(255, 99, 132)",
-                      backgroundColor: "rgba(255, 99, 132, 0.5)",
-                    },
-                  ],
-                });
-              });
           }}
           defaultValue="default"
         >
@@ -110,13 +141,16 @@ function App() {
           <option value="default">Choose an option</option>
         </select>
       </div>
-      {selected ? <CryptoSummary crypto={selected} /> : null}{" "}
+      {selected.map((s) => {
+        return <CryptoSummary crypto={s} />;
+      })}
+      {/*selected ? <CryptoSummary crypto={selected} /> : null*/}
       {/* //if there is a selected element run the Crypto summary function */}
-      {data ? (
+      {/*data ? (
         <div style={{ width: 600 }}>
           <Line options={options} data={data} />
         </div>
-      ) : null}
+      ) : null*/}
     </>
   );
 }
